@@ -1,0 +1,14 @@
+{
+  "name": "marvin",
+  "version": "0.1.0",
+  "description": "Small app to manage GNM folder and document creation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["electron","react","gnm"],
+  "author": "Robert Nasarek",
+  "email": "r.nasarek@gnm.de",
+  "license": "BSD-3-Clause",
+  "repository": "github:user/repo"
+}
