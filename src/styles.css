@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+a {
+  color: #d5d5d5;
+}
+
+.active {
+  display: block;
+}
+
+body {
+  background-color: #00152E ;
+  color: #d5d5d5;
+  font-family: 'Roboto', regular, serif;
+  font-size: larger;
+}
+
+
+.center {
+  margin: 0 auto;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.container {
+  width: 300px;
+  margin: 0 auto;
+}
+.cut {
+  max-width: max-content;
+}
+
+div {
+  padding: 0.5em;
+}
+
+.edit-button {
+  background-color: #d5d5d5;
+  font-family: roboto, sans-serif;
+  font-size: 1rem;
+  border-radius: 0 0.4rem 0.4rem 0;
+  border: unset;
+  padding: 0 4px;
+  height: 1.1rem;
+}
+
+.edit-input {
+  border-radius: 0.4rem 0 0 0.4rem;
+}
+
+.flex {
+  display: flex;
+  }
+
+.flex-full {
+  flex: 1
+}
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.full {
+  width: 100%;
+}
+
+.green {
+  background-color: darkgreen;
+}
+
+.inactive {
+  display: none;
+}
+
+input {
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 2px solid darkred;
+  border-radius: 3px;
+}
+
+input:focus {
+background-color: #d5d5d5;
+  color: #00152E;
+}
+
+input.edit-input:not(:disabled) {
+  background-color: #d5d5d5;
+  color: #00152E;
+}
+
+
+.input-field {
+  background-color: #00152E ;
+  color: #d5d5d5;
+  font-size: medium;
+
+}
+
+
+
+.justify-content-end {
+  justify-content: end;
+}
+
+.justify-content-space-between {
+  justify-content: space-between;
+}
+
+label {
+  padding-right: 5px;
+}
+
+.log {
+  font-size: 0.75em;
+  height: 5em;
+}
+
+p {
+  margin: 0;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.red {
+  background-color: crimson;
+}
+
+.round-box {
+  border-radius: 6px;
+}
+
+select {
+  border: none;
+  font-size: medium;
+  outline: none;
+
+}
+
+.send-button {
+  font-family: roboto, sans-serif;
+  font-size: 1rem;
+  border-radius: 0.4rem;
+  border: unset;
+  background-color: darkred;
+  color: #d5d5d5;
+}
+
+.scroll-y {
+  overflow-y: scroll;
+}
+
+.select-folder-field {
+  background-color: #00152E ;
+  color: #d5d5d5;
+  width: 100%;
+  font-size: .85rem;
+}
+
+
+.sticky-edit {
+  display: flex;
+  align-items: flex-start;
+}
+textarea, textarea:focus, input:focus{
+  outline: none;
+  font-size: medium;
+;
+}
+
+textarea.select-folder-field, textarea.select-folder-field:focus, input.select-folder-field:focus {
+  font-size: .85rem;
+}
+
+.top-distance {
+  margin-top: 1em;
+}
+
+.v-distance {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.yellow{
+  background-color: goldenrod;
+}

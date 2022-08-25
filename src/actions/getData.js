@@ -1,0 +1,7 @@
+import GnmObject from "../ObjektkatalogApi";
+
+/*
+ *
+ */
+
+
