@@ -15,7 +15,6 @@ import ObjektkatalogApi from './ObjektkatalogApi';
 ////////////////////
 
 export async function fillTemplate(log, objectData) {
-
   let buffer;
   // Create docx document.
   if (objectData.httpStatus === 200) {
@@ -26,24 +25,23 @@ export async function fillTemplate(log, objectData) {
       buffer = await createReport({
         template,
         data: {
-          inventarnummer: objectData.inventarnummer,
-          titel: objectData.titel,
-          hersteller: objectData.hersteller,
-          herstellungsort: objectData.herstellungsort,
-          herstellungsdatum: objectData.herstellungsdatum,
-          materialTechnik: objectData.materialTechnik,
-          masse: objectData.masse
+          inventarnummer: objectData.inventarnummer ? objectData.inventarnummer : 'unbekannt' ,
+          titel: objectData.titel ? objectData.titel : 'unbekannt',
+          hersteller: objectData.hersteller ? objectData.hersteller : 'unbekannt',
+          herstellungsort: objectData.herstellungsort ? objectData.herstellungsort : 'unbekannt',
+          herstellungsdatum: objectData.herstellungsdatum ? objectData.herstellungsdatum : 'unbekannt',
+          materialTechnik: objectData.materialTechnik ? objectData.materialTechnik : 'unbekannt' ,
+          masse: objectData.masse ? objectData.masse : 'unbekannt'
         }
       });
     } catch (err) {
       log = {
         ...log,
         status: 'red',
-        message: 'Konnte Template nicht öffnen: ' + err,
+        message: 'Konnte Template nicht erstellen: ' + err,
         tip: 'Ist das Template vorhanden?',
       };
     }
-
     const folderPath = path.join(config.rootDir, objectData.inventarnummer);
     // Create Folder if necessary.
     try {
@@ -51,20 +49,23 @@ export async function fillTemplate(log, objectData) {
     } catch (err) {
       log = {
         ...log,
-        status: 'green',
+        status: 'red',
         message: 'Konnte den Pfad nicht erstellen' + err,
         tip: 'Bestehen Schreibrechte auf dem Ordner?'
       }
     }
     // Write document to disk.
+
     if (buffer) {
-      fs.writeFileSync(path.join(folderPath, 'report.docx'), buffer)
+      console.log(objectData)
+      fs.writeFileSync(path.join(folderPath, objectData.titel), buffer)
       log = {
         ...log,
         status: 'green',
         message: 'Dokument erstellt',
       };
     }
+
   } else {
     log = {
       status: 'red',

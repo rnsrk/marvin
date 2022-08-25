@@ -1,9 +1,6 @@
 // Components
 import {DataForm} from "./DataForm";
 import {Log} from "./Log"
-
-// Modules
-import {fillTemplate} from "../DocxInserter";
 import SettingsIcon from '@mui/icons-material/Settings';
 
 // React
@@ -11,7 +8,7 @@ import { Link } from "react-router-dom";
 import React, {useState} from 'react'
 
 // CSS
-import '../styles.css'
+import '../assets/css/styles.css'
 import ObjektkatalogApi from "../ObjektkatalogApi";
 
 
@@ -19,10 +16,8 @@ import ObjektkatalogApi from "../ObjektkatalogApi";
 //      Main      //
 ////////////////////
 
-
-
 export const App = () => {
-  let log;
+
 
   // States
 
@@ -42,6 +37,7 @@ export const App = () => {
 
   const [objectData, setObjectData] = useState(
     {
+      datum: '',
       inventarnummer: '',
       titel: '',
       hersteller: '',
@@ -65,18 +61,38 @@ export const App = () => {
       // Get objectId from user input.
       let objectId = document.getElementById('object-id').value
 
-      // Get object data from objektkatalog.gnm.de
-      let objektkatalogApi = new ObjektkatalogApi();
-      let objectData = await objektkatalogApi.getData(objectId);
+      if (objectId) {
 
-      console.log(objectData)
-
-      log = await fillTemplate(log, objectData);
-        // Set new state of log div with message and visibility class
+        // Get object data from objektkatalog.gnm.de
+        let objektkatalogApi = new ObjektkatalogApi();
+        let receivedObjectData = await objektkatalogApi.getData(objectId);
+        if (receivedObjectData.httpStatus === 404) {
+          setLogState({
+            log: {
+              status: 'red',
+              message: 'Kein Objekt mit dieser Inventarnummer gefunden!',
+              code: '',
+              tip:'',
+            }, // with message, code, tip
+            logClass: 'active'
+          })
+        } else {
+        console.log(receivedObjectData)
+        // Fill and open check up form
+        setObjectData(receivedObjectData)
+        setCheckUpVisibility(true)
+        }
+      } else {
         setLogState({
-          log: log,
-          logStatus: 'active'
-        });
+          log: {
+            status: 'red',
+            message: 'Bitte Inventarnummer eingeben!',
+            code: '',
+            tip:'',
+          }, // with message, code, tip
+          logClass: 'active'
+        })
+      }
     }
 
     return (
@@ -108,7 +124,13 @@ export const App = () => {
 
             </form>
           </div>
-          <DataForm/>
+          <DataForm
+            className={checkUpVisibility ? 'open' : 'closed'}
+            objectData={objectData}
+            setObjectData={setObjectData}
+            logState={logState}
+            setLogState={setLogState}
+          />
         </main>
         <footer>
           {/* We give state and state setter of the parent as params to the child components, so that child events can change parent states */}

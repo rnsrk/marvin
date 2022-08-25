@@ -20,6 +20,16 @@ body {
   margin: 0 auto;
 }
 
+.checkup {
+  transition: height 1s;
+  height: 0;
+}
+
+.closed{
+  height: 0;
+  position: relative;
+}
+
 .column {
   flex-direction: column;
 }
@@ -82,6 +92,14 @@ input {
   border-radius: 3px;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: #d5d5d5;
+  width: 20px;
+  height: 20px;
+  border-width: thin;
+  filter: invert(1);
+}
+
 input:focus {
 background-color: #d5d5d5;
   color: #00152E;
@@ -97,7 +115,7 @@ input.edit-input:not(:disabled) {
   background-color: #00152E ;
   color: #d5d5d5;
   font-size: medium;
-
+  font-family: roboto, sans-serif;
 }
 
 
@@ -118,7 +136,14 @@ label {
   font-size: 0.75em;
   height: 5em;
 }
+.no-overflow {
+  overflow: hidden;
+  height: inherit;
+}
 
+.open {
+  height: 700px;
+}
 p {
   margin: 0;
 }
