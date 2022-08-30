@@ -1,11 +1,12 @@
 // Config
-import config from './config/config.json'
+import config from '/resources/config/config.json'
 
 // Modules
 import createReport from 'docx-templates';
 import fs from 'fs';
 import { mkdir } from 'node:fs/promises';
 import path from 'path';
+import replaceSpecialCharacters from "replace-special-characters";
 
 // Components
 import ObjektkatalogApi from './ObjektkatalogApi';
@@ -20,7 +21,7 @@ export async function fillTemplate(log, objectData) {
   if (objectData.httpStatus === 200) {
     try {
       // Read template.
-      const template = fs.readFileSync('src/assets/templates/rp-template.docx');
+      const template = fs.readFileSync('resources/templates/rp-template.docx');
       // Create report.
       buffer = await createReport({
         template,
@@ -57,8 +58,10 @@ export async function fillTemplate(log, objectData) {
     // Write document to disk.
 
     if (buffer) {
-      console.log(objectData)
-      fs.writeFileSync(path.join(folderPath, objectData.titel), buffer)
+      const normCharacterTitle = replaceSpecialCharacters(objectData.titel)
+      const normSpacingTitle = normCharacterTitle.replace(/[^A-Z0-9]+/ig, "_");
+      const filename = objectData.datum + '_' + normSpacingTitle + '.docx'
+      fs.writeFileSync(path.join(folderPath, filename), buffer)
       log = {
         ...log,
         status: 'green',

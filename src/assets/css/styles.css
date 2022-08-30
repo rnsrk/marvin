@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 a {
   color: #d5d5d5;
@@ -9,10 +9,10 @@ a {
 }
 
 body {
-  background-color: #00152E ;
+  background-color: white ;
   color: #d5d5d5;
-  font-family: 'Roboto', regular, serif;
-  font-size: larger;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
 }
 
 
@@ -26,7 +26,8 @@ body {
 }
 
 .closed{
-  height: 0;
+  height: 0px;
+  overflow: hidden;
   position: relative;
 }
 
@@ -47,13 +48,13 @@ div {
 }
 
 .edit-button {
-  background-color: #d5d5d5;
-  font-family: roboto, sans-serif;
+  background-color: #e30f27;
+  color: #d5d5d5;
+  font-family: "Open Sans", sans-serif;
   font-size: 1rem;
-  border-radius: 0 0.4rem 0.4rem 0;
   border: unset;
   padding: 0 4px;
-  height: 1.1rem;
+  height: 1.5rem;
 }
 
 .edit-input {
@@ -63,6 +64,12 @@ div {
 .flex {
   display: flex;
   }
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .flex-full {
   flex: 1
@@ -88,21 +95,23 @@ input {
   border-top: none;
   border-right: none;
   border-left: none;
-  border-bottom: 2px solid darkred;
+  border-bottom: 2px solid  #e30f27;
   border-radius: 3px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  color: #d5d5d5;
+  color: black;
   width: 20px;
   height: 20px;
   border-width: thin;
-  filter: invert(1);
 }
+
+
 
 input:focus {
 background-color: #d5d5d5;
   color: #00152E;
+  font-size: .9rem;
 }
 
 input.edit-input:not(:disabled) {
@@ -112,9 +121,9 @@ input.edit-input:not(:disabled) {
 
 
 .input-field {
-  background-color: #00152E ;
-  color: #d5d5d5;
-  font-size: medium;
+  background-color: #f2f2f2 ;
+  color: black;
+  font-size: .9rem;
   font-family: roboto, sans-serif;
 }
 
@@ -130,11 +139,26 @@ input.edit-input:not(:disabled) {
 
 label {
   padding-right: 5px;
+  color: #464646;
+}
+.loading-icon-canvas {
+  position: absolute;
+  height: 98%;
+  width: 98%;
+  left: 0%;
+  top: 0%;
+  background-color: #555555;
+  opacity: .5;
 }
 
+.loading-icon
 .log {
   font-size: 0.75em;
   height: 5em;
+}
+
+.nav-icon svg {
+  fill: black;
 }
 .no-overflow {
   overflow: hidden;
@@ -142,7 +166,7 @@ label {
 }
 
 .open {
-  height: 700px;
+  height: 500px;
 }
 p {
   margin: 0;
@@ -157,7 +181,8 @@ p {
 }
 
 .red {
-  background-color: crimson;
+  background-color: #e30f27;
+  color: white;
 }
 
 .round-box {
@@ -172,12 +197,12 @@ select {
 }
 
 .send-button {
-  font-family: roboto, sans-serif;
+  background-color: #e30f27;
+  color: white;
+  font-family: "Open Sans", sans-serif;
   font-size: 1rem;
-  border-radius: 0.4rem;
   border: unset;
-  background-color: darkred;
-  color: #d5d5d5;
+
 }
 
 .scroll-y {
@@ -191,6 +216,18 @@ select {
   font-size: .85rem;
 }
 
+.settings-div {
+  background-color: #d5d5d5;
+  color: black;
+  width: 300px;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 0.125rem solid #e30019;
+  border-radius: 0.1875rem;
+  overflow-x: scroll;
+  white-space:nowrap;
+}
 
 .sticky-edit {
   display: flex;
@@ -198,7 +235,7 @@ select {
 }
 textarea, textarea:focus, input:focus{
   outline: none;
-  font-size: medium;
+  font-size: .9rem;
 ;
 }
 
@@ -215,6 +252,32 @@ textarea.select-folder-field, textarea.select-folder-field:focus, input.select-f
   margin-bottom: 0.25em;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  width: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
 .yellow{
   background-color: goldenrod;
 }
+
+

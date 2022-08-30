@@ -1,15 +1,18 @@
-import config from '../config/config.json'
+// Config
+import configImport from '/resources/config/config.json'
+
+// Components
+import {Log} from "../components/Log";
 
 // Icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import EditIcon from '@mui/icons-material/Edit';
-
-// Modules
-const {writeFile} = require('fs');
 
 // React
 import React, {useState} from "react";
-import {Link} from "react-router-dom";
+import {NavLink} from "react-router-dom";
+import {Input} from "../components/Input";
+import EditIcon from "@mui/icons-material/Edit";
+import {writeFile} from "fs";
 
 
 ////////////////////
@@ -17,54 +20,62 @@ import {Link} from "react-router-dom";
 ////////////////////
 
 export default function Settings() {
-  let rootDir;
-  const [disableButton, setDisableButton] = useState(true)
+  // States
+  const [config, setConfig] = useState(
+    configImport
+  )
 
-  async function selectFolderHandler() {
-    return rootDir = await window.openFile();
+  const [restart, setRestart] = useState(
+    false
+  )
 
+  //Functions
+  async function selectFolderHandler(e) {
+    e.preventDefault()
+    const rootDirFromWindow = await window.openFile();
+    setConfig((prevState) => {
+      return {
+        ...prevState,
+        rootDir: rootDirFromWindow
+      }
+    })
+    const saveResult = await saveInputClickHandler(rootDirFromWindow)
   }
-
-
 
   // Handler
-  function saveInputClickHandler(rootDir) {
-    if (rootDir) {
-      config.rootDir = rootDir
-      writeFile('src/config/config.json', JSON.stringify(config, null, 2), (error) => {
-        if (error) {
-          console.log('An error has occurred ', error);
-          return;
+  async function saveInputClickHandler(rootDirFromWindow) {
+    let config2Safe = {
+      rootDir: rootDirFromWindow
+    }
+    if (rootDirFromWindow) {
+      let message;
+      await writeFile('resources/config/config.json', JSON.stringify(config2Safe, null, 2), (err) => {
+        if (err) {
+          message = err;
+        } else {
+          message = 'saved file'
         }
-        console.log('Data written successfully to disk');
-      });
+        return message
+      })
+      setRestart(true)
     }
   }
+
 
   return (
     <div className="App">
       <header className="App-header">
-        <Link to="/"><ArrowBackIosIcon/></Link>
+        <NavLink className={'nav-icon'} to="/"><ArrowBackIosIcon/></NavLink>
       </header>
       <main>
-        <form>
+        <div className={'full red v-distance'}>Die App muss nach Veränderungen neu gestartet werden!</div>
+        <form onSubmit={selectFolderHandler}>
           <label htmlFor={"output-root"}>
             Wurzelverzeichnis
           </label>
           <div className="col-sm-10 d-flex align-items-center flex sticky-edit">
-            <input
-              id={"root-dir"}
-              className={"form-control select-folder-field edit-input"}
-              defaultValue={config.rootDir}
-              disabled={true}
-            />
-            <button className="edit-button text-end" onClick={
-              (e) => {
-                console.log(e)
-                e.preventDefault()
-                selectFolderHandler().then((rootDir) => {saveInputClickHandler(rootDir)})
-              }
-            }>
+            <Input config={config} setConfig={setConfig}/>
+            <button type="submit" className="edit-button text-end">
               <i className="fas fa-edit d-block">
                 <EditIcon sx={{fontSize: 16}} color={'#d5d5d5'}/>
               </i>

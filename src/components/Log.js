@@ -9,7 +9,7 @@ export const Log = ({logState, setLogState}) => {
   let code;
   let tip;
 
-    const closeLog = (e, logClass) => {
+    const closeLog = (e) => {
       e.preventDefault()
       setLogState({log: logState.log,
         logClass: 'inactive'});
@@ -30,7 +30,7 @@ export const Log = ({logState, setLogState}) => {
     <div className={'log '}>
       <div id={'log-content'} className={classes}>
         <div>
-          <button onClick={(e) => {closeLog(e)}}>x</button>
+          <button onClick={closeLog}>x</button>
         </div>
         <div className={'scroll-y flex-full'} style={{maxHeight: 4 + 'em'}}>
           <p>{logState.log.message}</p>

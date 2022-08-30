@@ -5,8 +5,21 @@ const {parseString} = require("xml2js");
  */
 class ObjektkatalogApi {
   json;
-  short;
   raw;
+  receivedData = {
+    datum: '',
+    hersteller: '',
+    herstellungsdatum: '',
+    herstellungsort: '',
+    httpStatus: 500,
+    inventarnummer: '',
+    masse: '',
+    materialTechnik: '',
+    titel: '',
+  };
+
+  visibility;
+
   async getData(objectId) {
     if (objectId) {
       const response = await fetch('https://objektkatalog.gnm.de/rest_export/' + objectId);
@@ -41,14 +54,37 @@ class ObjektkatalogApi {
             zustandsbeschreibung: responseJson[0]['f54b6da6006ea444c33a348b8c4370a8']
           }
         } else {
-          return {httpStatus: 404};
+          // No JSON
+          this.receivedData = {
+            ...this.receivedData,
+            httpStatus: 404,
+          }
+          this.visibility = false
+          return [this.receivedData, this.visibility]
         }
       } else {
-        return {httpStatus: response.status};
+        // No response
+        this.receivedData= {
+          ...this.receivedData,
+          httpStatus: 404,
+        }
+        this.visibility = false
+        return [this.receivedData, this.visibility]
       }
     } else {
-      return {httpStatus: 400}
+      // No ObjectId
+      this.receivedData = {
+        ...this.receivedData,
+        httpStatus: 500,
+      }
+      this.visibility = false
+      return [this.receivedData, this.visibility]
     }
+
+    // Datum
+    // Default date of today
+    let today = new Date()
+    let todayFormat = today.getFullYear() + '-' + (String(today.getMonth() + 1).padStart(2, '0')) + '-' + String(today.getDate()).padStart(2, '0'); ;
 
     // Inventarnummer
     let inventarnummer;
@@ -113,19 +149,22 @@ class ObjektkatalogApi {
       })
     }
 
-    return this.short = {
-      inventarnummer: inventarnummer,
-      titel: titel,
-      hersteller: hersteller,
-      herstellungsort: herstellungsort,
-      herstellungsdatum: herstellungsdatum,
-      materialTechnik: materialTechnik,
-      masse: masse,
-      httpStatus: 200,
-    }
-
-
+    this.receivedData ={
+        ...this.receivedData,
+        datum: todayFormat,
+        titel: titel,
+        hersteller: hersteller,
+        herstellungsort: herstellungsort,
+        herstellungsdatum: herstellungsdatum,
+        inventarnummer: inventarnummer,
+        materialTechnik: materialTechnik,
+        masse: masse,
+        httpStatus: 200,
+      }
+    this.visibility = true
+    return [this.receivedData, this.visibility]
   }
 }
+
 
 module.exports = ObjektkatalogApi;

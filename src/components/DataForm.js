@@ -8,13 +8,11 @@ import React from 'react'
 //      Main      //
 ////////////////////
 
-export const DataForm = ({className, objectData, setObjectData, logState, setLogState}) => {
+export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState, setLogState}) => {
   let log;
 
   // Handlers
-
   const datumChangeHandler = (e) => {
-    console.log(e.target.form.datum.value)
     setObjectData((prevState) => {
       return {
         ...prevState,
@@ -88,7 +86,6 @@ export const DataForm = ({className, objectData, setObjectData, logState, setLog
 
   const fillTemplateClickHandler = async (e) => {
     e.preventDefault();
-    console.log(objectData, 'parentobjectData')
     log = await fillTemplate(logState, objectData);
     // Set new state of log div with message and visibility class
     setLogState({
@@ -97,12 +94,8 @@ export const DataForm = ({className, objectData, setObjectData, logState, setLog
     });
   }
 
-  // Default date of today
-  let today = new Date()
-  let todayFormat = today.getFullYear() + '-' + (String(today.getMonth() + 1).padStart(2, '0')) + '-' + String(today.getDate()).padStart(2, '0'); ;
-
-  return (<div className={'checkup ' + className}>
-      <form className={'flex column no-overflow'}>
+  return (<div className={'checkup ' + (checkUpVisibility ? 'open' : 'closed')}>
+      <form className={'flex column '}>
         <div >
           <label htmlFor={'template-datum'} >Datum</label>
           <input
@@ -110,11 +103,11 @@ export const DataForm = ({className, objectData, setObjectData, logState, setLog
             name={"datum"}
             type={"date"}
             className={"full input-field"}
-            defaultValue={todayFormat}
+            defaultValue={objectData.datum}
             onChange={datumChangeHandler}
           />
         </div>
-        <div >
+        <div>
           <label htmlFor={'template-inventarnummer'} >Inventarnummer</label>
           <input
             id={"template-inventarnummer"}

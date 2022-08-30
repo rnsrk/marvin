@@ -30,8 +30,8 @@ if (process.platform === 'win32') {
 
 // Functions
 
-async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {properties: ['openDirectory']})
+ async function handleFileOpen() {
+  const { canceled, filePaths } =  await dialog.showOpenDialog(mainWindow, {properties: ['openDirectory']})
   if (canceled) {
     return
   } else {
