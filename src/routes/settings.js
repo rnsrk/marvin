@@ -68,7 +68,6 @@ export default function Settings() {
         <NavLink className={'nav-icon'} to="/"><ArrowBackIosIcon/></NavLink>
       </header>
       <main>
-        <div className={'full red v-distance'}>Die App muss nach Veränderungen neu gestartet werden!</div>
         <form onSubmit={selectFolderHandler}>
           <label htmlFor={"output-root"}>
             Wurzelverzeichnis

@@ -1,5 +1,4 @@
-// Config
-import config from '/resources/config/config.json'
+
 
 // Modules
 import createReport from 'docx-templates';
@@ -17,9 +16,12 @@ import ObjektkatalogApi from './ObjektkatalogApi';
 
 export async function fillTemplate(log, objectData) {
   let buffer;
+  let configJson
   // Create docx document.
   if (objectData.httpStatus === 200) {
     try {
+      let ConfigFile = fs.readFileSync('resources/config/config.json')
+      configJson = JSON.parse(ConfigFile)
       // Read template.
       const template = fs.readFileSync('resources/templates/rp-template.docx');
       // Create report.
@@ -43,7 +45,7 @@ export async function fillTemplate(log, objectData) {
         tip: 'Ist das Template vorhanden?',
       };
     }
-    const folderPath = path.join(config.rootDir, objectData.inventarnummer);
+    const folderPath = path.join(configJson.rootDir, objectData.inventarnummer);
     // Create Folder if necessary.
     try {
       const createDir = await mkdir(folderPath, {recursive: true});
