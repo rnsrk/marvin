@@ -1,5 +1,5 @@
 // Config
-import configImport from '/resources/config/config.json'
+import configImport from '/home/rbrt/WebstormProjects/marvin/resources/files/config/config.json'
 
 // Components
 import {Log} from "../components/Log";
@@ -49,7 +49,7 @@ export default function Settings() {
     }
     if (rootDirFromWindow) {
       let message;
-      await writeFile('resources/config/config.json', JSON.stringify(config2Safe, null, 2), (err) => {
+      await writeFile('resources/files/config/config.json', JSON.stringify(config2Safe, null, 2), (err) => {
         if (err) {
           message = err;
         } else {

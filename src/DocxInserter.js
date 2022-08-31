@@ -21,7 +21,7 @@ export async function fillTemplate(log, objectData) {
     let documentInfo;
     try {
       // Load config file.
-      let ConfigFile = fs.readFileSync('resources/config/config.json')
+      let ConfigFile = fs.readFileSync('resources/files/config/config.json')
       configJson = JSON.parse(ConfigFile)
 
       // Choose the template for selected document type.
@@ -46,7 +46,7 @@ export async function fillTemplate(log, objectData) {
           break;
       }
       // Read template.
-      const template = fs.readFileSync(path.join('resources/templates/', documentInfo.templateFile));
+      const template = fs.readFileSync(path.join('resources/files/templates/', documentInfo.templateFile));
 
       // Create report.
       buffer = await createReport({
