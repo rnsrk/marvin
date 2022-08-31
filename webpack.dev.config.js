@@ -42,11 +42,14 @@ module.exports = {
   ],
   devtool: 'cheap-source-map',
   devServer: {
-    static: path.resolve(__dirname, 'dist'),
+    // Tell the server where to serve the content from.
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+    },
     onBeforeSetupMiddleware() {
       spawn(
         'electron',
-        ['.'],
+        ['--trace-warnings .'],
         { shell: true, env: process.env, stdio: 'inherit' }
       )
       .on('close', code => process.exit(0))

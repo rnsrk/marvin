@@ -167,6 +167,7 @@ label {
 
 .open {
   height: 550px;
+  overflow: hidden;
 }
 p {
   margin: 0;

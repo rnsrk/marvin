@@ -44,6 +44,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 400,
     height: 600,
+    icon: __dirname + '/marvin.ico',
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

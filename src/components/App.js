@@ -41,6 +41,7 @@ export const App = () => {
   const [objectData, setObjectData] = useState(
     {
       datum: '',
+      dokumenttyp: '',
       hersteller: '',
       herstellungsdatum: '',
       herstellungsort: '',
@@ -57,64 +58,110 @@ export const App = () => {
   );
 
   // Handler
+
+  // Get userinput from main form, ask Objektkatalog API for Data and fill check up form.
   const getDataAndAskForCheckUpClickHandler = async (e) => {
+    // Show loading widget.
     setIsLoading(true)
+
     // Prevent page reload.
     e.preventDefault()
-    let objectId = ''
-    objectId = e.target.form.objectId.value
-    // Get objectId from user input.
 
+    // Get objectId and document type from user input.
+    let objectId = e.target.form.objectId.value
+    let documentType = e.target.form.documentType.value
+
+    // Set object state.
     await setObjectData((prevState) => {
         return {
           ...prevState,
           inventarnummer: objectId,
+          dokumenttyp: documentType,
         }
       }
     )
 
     if (objectId) {
-      // Get object data from objektkatalog.gnm.de
+      // Get object data from objektkatalog.gnm.de.
       const [receivedObjectData, receivedVisibility] = await objektkatalogApi.getData(objectId);
-      if (receivedObjectData.httpStatus !== 200) {
-        await setLogState({
-          log: {
-            status: 'red',
-            message: 'Kein Objekt mit dieser Inventarnummer gefunden!',
-            code: '',
-            tip: '',
-          }, // with message, code, tip
-          logClass: 'active'
-        })
-        await setCheckUpVisibility(false)
-      } else {
-        // Fill and open check up form
-        await setObjectData(receivedObjectData)
-        await setCheckUpVisibility(true)
-        await setLogState({
-          log: {
-            status: '',
-            message: '',
-            code: '',
-            tip: '',
-          }, // with message, code, tip
-          logClass: 'inactive'
-        })
+      // If no response from Objektkatalog.
+      switch (receivedObjectData.httpStatus) {
+        // Server not reachable.
+        case 503:
+          await setLogState({
+            log: {
+              status: 'red',
+              message: 'Objektkatalog nicht erreichbar!',
+              code: '503',
+              tip: 'Sind sie mit dem Internet verbunden und ist der Objektkatalog online?',
+            }, // with message, code, tip
+            logClass: 'active'
+          })
+          // Hide Loading
+          setIsLoading(false)
+          return;
+        case 200:
+          // Fill and open check up form.
+          await setObjectData(prevState => {
+            return {
+              ...prevState,
+              ...receivedObjectData
+            }
+          })
+          // Show check up form.
+          await setCheckUpVisibility(true)
+
+          // Set success log but hide.
+          await setLogState({
+            log: {
+              status: '',
+              message: '',
+              code: '',
+              tip: '',
+            },
+            logClass: 'inactive'
+          })
+          break;
+        default:
+          // Set error log state.
+          await setLogState({
+            log: {
+              status: 'red',
+              message: 'Kein Objekt mit dieser Inventarnummer gefunden!',
+              code: '',
+              tip: 'Groß-/Kleinschreibung beachten und keine Leerzeichen verwenden!',
+            }, // with message, code, tip
+            logClass: 'active'
+          })
+          // Hide Loading
+          setIsLoading(false)
+          // Hide check up form.
+          await setCheckUpVisibility(false)
+
       }
     } else {
+      // Set error log.
       await setLogState({
         log: {
           status: 'red',
           message: 'Bitte Inventarnummer eingeben!',
           code: '',
           tip: '',
-        }, // with message, code, tip
+        },
         logClass: 'active'
       })
+      // Hide check up form.
       await setCheckUpVisibility(false)
     }
+    // Hide loading widget.
     setIsLoading(false)
   }
+  // Component with
+  // * Navigation (Nav) *
+  // * Main form (this)*
+  // * Loading widget (LoadingIcon)*
+  // * Checkup form (DataForm)*
+  // * Log (Log)*
 
   return (
     <div className="App">
@@ -128,10 +175,10 @@ export const App = () => {
           <form id={"object-id-form"} className={"flex-wrap"}>
             <div className={"center column flex justify-content-space-between "}>
               <label htmlFor="document-type" className={"center cut v-distance"}>Dokumenttyp:</label>
-              <select name="document-type" id="document-type" className={"input-field center cut"}>
-                <option value="restaurierungsprotokoll">Restaurierungsprotokoll</option>
-                <option value="leihgabenbegleitblatt">Leihgabenbegleitblatt</option>
-                <option value="analyse">Analyse</option>
+              <select name="documentType" id="document-type" className={"input-field center cut"}>
+                <option value="rp">Restaurierungsprotokoll</option>
+                <option value="lbb">Leihgabenbegleitblatt</option>
+                <option value="a">Analyse</option>
               </select>
             </div>
             <div className={"center column flex full justify-content-space-between"}>

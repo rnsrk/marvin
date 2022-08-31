@@ -8,10 +8,17 @@ import React from 'react'
 //      Main      //
 ////////////////////
 
+
+// Renders check up form and gives the possibility to change received values.
 export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState, setLogState}) => {
+
+  // Variables
   let log;
 
   // Handlers
+  // Change handler response to every keystroke!
+
+  // Change date.
   const datumChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -20,7 +27,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
       }
     })
   }
-
+  // Change identifier.
   const inventarnummerChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -29,7 +36,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
       }
     })
   }
-
+  // Change title.
   const titelChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -39,6 +46,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
     })
   }
 
+  // Change creator.
   const herstellerChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -47,7 +55,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
       }
     })
   }
-
+  // Change creation place.
   const herstellungsortChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -57,6 +65,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
     })
   }
 
+  // Change creation date.
   const herstellungsdatumChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -66,6 +75,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
     })
   }
 
+  // Change material and technic.
   const materialTechnikChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -75,6 +85,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
     })
   }
 
+  // Change sizes.
   const masseChangeHandler = (e) => {
     setObjectData((prevState) => {
       return {
@@ -84,6 +95,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
     })
   }
 
+  // Fill the template and save it.
   const fillTemplateClickHandler = async (e) => {
     e.preventDefault();
     log = await fillTemplate(logState, objectData);
@@ -94,6 +106,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
     });
   }
 
+  // Renders data form
   return (<div className={'checkup ' + (checkUpVisibility ? 'open' : 'closed')}>
       <form className={'flex column '}>
         <div >
