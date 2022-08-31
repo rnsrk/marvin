@@ -106,7 +106,8 @@ let mainMenu = Menu.buildFromTemplate(
               bug_link_text: 'Einen Fehler melden',
               license: 'MIT',
               description: 'App zur Dokumentverwaltung im IKK am Germanischen Nationalmuseum.',
-              win_options: {title: 'Über Marvin'}
+              win_options: {title: 'Über Marvin'},
+              homepage: 'https://github.com/rnsrk/marvin'
             })
           }
         }
