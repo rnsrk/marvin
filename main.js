@@ -1,7 +1,8 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow, dialog, ipcMain } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, Menu} = require('electron')
+const openAboutWindow = require('about-window').default
 const path = require('path')
 const url = require('url')
 
@@ -39,6 +40,83 @@ if (process.platform === 'win32') {
   }
 }
 
+// Build main menu from file.
+let mainMenu = Menu.buildFromTemplate(
+  [
+    // { role: 'fileMenu' }
+    {
+      label: 'Datei',
+      submenu: [
+        {
+          label: 'Beenden',
+          role: 'quit'
+        }
+      ]
+    },
+    // { role: 'viewMenu' }
+    {
+      label: 'Ansicht',
+      submenu: [
+        {
+          label: 'Neu laden',
+          role: 'reload'
+        },
+        {
+          label: 'Erzwinge Neustart',
+          role: 'forceReload'
+        },
+        {type: 'separator'},
+        {
+          label: 'Zoom zurücksetzen',
+          role: 'resetZoom'
+        },
+        {
+          label: 'Hineinzoomen',
+          role: 'zoomIn',
+          accelerator: 'Ctrl+=',
+        },
+        {
+          label: 'Herauszoomen',
+          role: 'zoomOut',
+          accelerator: 'Ctrl+-',
+        },
+        {type: 'separator'},
+      ]
+    },
+    // { role: 'windowMenu' }
+    {
+      label: 'Fenster',
+      submenu: [
+        {
+          label: 'Minimieren',
+          role: 'minimize'
+        },
+      ]
+    },
+    {
+      label: 'Hilfe',
+      role: 'help',
+      submenu: [
+        {
+          label: 'Über Marvin',
+          click: () => {
+            openAboutWindow({
+              icon_path: path.join(__dirname, 'marvin.ico'),
+              bug_report_url:'mailto:r.nasarek@gnm.de',
+              bug_link_text: 'Einen Fehler melden',
+              license: 'MIT',
+              description: 'App zur Dokumentverwaltung im IKK am Germanischen Nationalmuseum.',
+              win_options: {title: 'Über Marvin'}
+            })
+          }
+        }
+      ]
+    }
+  ]
+)
+
+
+
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -56,7 +134,10 @@ function createWindow() {
   // and load the index.html of the app.
   let indexPath
 
+
+  // Server Options
   if (dev && process.argv.indexOf('--noDevServer') === -1) {
+    // Ether from devServer
     indexPath = url.format({
       protocol: 'http:',
       host: 'localhost:8080',
@@ -64,6 +145,7 @@ function createWindow() {
       slashes: true
     })
   } else {
+    // Or build file
     indexPath = url.format({
       protocol: 'file:',
       pathname: path.join(__dirname, 'dist', 'index.html'),
@@ -71,7 +153,11 @@ function createWindow() {
     })
   }
 
+  // Load base html
   mainWindow.loadURL(indexPath)
+
+  // Load menu
+  Menu.setApplicationMenu(mainMenu)
 
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
