@@ -70,7 +70,7 @@ export default function Settings() {
       <main>
         <form onSubmit={selectFolderHandler}>
           <label htmlFor={"output-root"}>
-            Wurzelverzeichnis
+            Hauptverzeichnis
           </label>
           <div className="col-sm-10 d-flex align-items-center flex sticky-edit">
             <Input config={config} setConfig={setConfig}/>

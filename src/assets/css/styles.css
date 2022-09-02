@@ -12,7 +12,7 @@ body {
   background-color: white ;
   color: #d5d5d5;
   font-family: 'Open Sans', sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 
@@ -92,6 +92,8 @@ div {
 }
 
 input {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.1rem;
   border-top: none;
   border-right: none;
   border-left: none;
@@ -111,7 +113,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input:focus {
 background-color: #d5d5d5;
   color: #00152E;
-  font-size: .9rem;
+  font-size: 1.1rem;
 }
 
 input.edit-input:not(:disabled) {
@@ -123,8 +125,8 @@ input.edit-input:not(:disabled) {
 .input-field {
   background-color: #f2f2f2 ;
   color: black;
-  font-size: .9rem;
-  font-family: roboto, sans-serif;
+  font-size: 1.1rem;
+  font-family: "Open Sans", sans-serif;
 }
 
 
@@ -166,7 +168,7 @@ label {
 }
 
 .open {
-  height: 550px;
+  height: 610px;
   overflow: hidden;
 }
 p {
@@ -192,8 +194,10 @@ p {
 
 select {
   border: none;
-  font-size: medium;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.1rem;
   outline: none;
+  border-radius: 3px;
 
 }
 
@@ -201,7 +205,7 @@ select {
   background-color: #e30f27;
   color: white;
   font-family: "Open Sans", sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   border: unset;
 
 }
@@ -214,7 +218,8 @@ select {
   background-color: #00152E ;
   color: #d5d5d5;
   width: 100%;
-  font-size: .85rem;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.1rem;
 }
 
 .settings-div {
@@ -235,13 +240,15 @@ select {
   align-items: flex-start;
 }
 textarea, textarea:focus, input:focus{
+  font-family: "Open Sans", sans-serif;
   outline: none;
-  font-size: .9rem;
+  font-size: 1.1rem;
 ;
 }
 
 textarea.select-folder-field, textarea.select-folder-field:focus, input.select-folder-field:focus {
-  font-size: .85rem;
+  font-size: 1.1rem;
+  font-family: "Open Sans", sans-serif;
 }
 
 .top-distance {
@@ -255,25 +262,26 @@ textarea.select-folder-field, textarea.select-folder-field:focus, input.select-f
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   height: 5px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
 
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  width: 10px;
+  background-color: #d5d5d5;
+  width: 3px;
+  border-radius: 3px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #464646;
 }
 
 

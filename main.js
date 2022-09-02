@@ -1,22 +1,23 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow, dialog, ipcMain, Menu} = require('electron')
+const {app, BrowserWindow, dialog, ipcMain, Menu, screen, Tray} = require('electron')
 const openAboutWindow = require('about-window').default
 const path = require('path')
 const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+let mainWindow, tray;
+let devBrowserProperties = {};
+
+function createTray() {
+  tray = new Tray('./marvin16x16.png');
+  tray.setToolTip('Marvin')
+}
 
 // Keep a reference for dev mode
 let dev = false
-
-// Broken:
-// if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath)) {
-//   dev = true
-// }
 
 if (process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'development') {
   dev = true
@@ -31,8 +32,8 @@ if (process.platform === 'win32') {
 
 // Functions
 
- async function handleFileOpen() {
-  const { canceled, filePaths } =  await dialog.showOpenDialog(mainWindow, {properties: ['openDirectory']})
+async function handleFileOpen() {
+  const {canceled, filePaths} = await dialog.showOpenDialog(mainWindow, {properties: ['openDirectory']})
   if (canceled) {
     return
   } else {
@@ -102,7 +103,7 @@ let mainMenu = Menu.buildFromTemplate(
           click: () => {
             openAboutWindow({
               icon_path: path.join(__dirname, 'marvin.ico'),
-              bug_report_url:'mailto:r.nasarek@gnm.de',
+              bug_report_url: 'mailto:r.nasarek@gnm.de',
               bug_link_text: 'Einen Fehler melden',
               license: 'MIT',
               description: 'App zur Dokumentverwaltung im IKK am Germanischen Nationalmuseum.',
@@ -117,12 +118,26 @@ let mainMenu = Menu.buildFromTemplate(
 )
 
 
+function createWindow(dimensions) {
+  if (dev !== true) {
+    devBrowserProperties = {
+      fullscreenable: false,
+      resizable: false,
+    }
 
-function createWindow() {
+  }
+  // Create tray icon.
+  createTray()
+  let appWidth = 400;
+  let appHeight = 720;
+  let xPosition = (dimensions.width - appWidth)
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 600,
+    ...devBrowserProperties,
+    x: xPosition,
+    y: 0,
+    width: appWidth,
+    height: appHeight,
     icon: __dirname + '/marvin.ico',
     show: false,
     webPreferences: {
@@ -163,23 +178,17 @@ function createWindow() {
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
-
     // Open the DevTools automatically if developing
     if (dev) {
-      const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer')
-
+      const {default: installExtension, REACT_DEVELOPER_TOOLS} = require('electron-devtools-installer')
       installExtension(REACT_DEVELOPER_TOOLS)
         .catch(err => console.log('Error loading React DevTools: ', err))
       mainWindow.webContents.openDevTools()
     }
   })
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null
+  mainWindow.on('closed', function () {
+    mainWindow = null;
   })
 }
 
@@ -188,7 +197,9 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   ipcMain.handle('dialog:openFile', handleFileOpen)
-  createWindow();
+  const display = screen.getPrimaryDisplay();
+  const dimensions = display.size;
+  createWindow(dimensions);
 
 })
 
