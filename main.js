@@ -11,13 +11,34 @@ const url = require('url')
 let mainWindow, tray;
 let devBrowserProperties = {};
 
+let trayMenu = Menu.buildFromTemplate([
+  {
+    label: 'Öffnen',
+    click:  function(){
+      mainWindow.show();
+    }
+  },
+  {
+    label: 'Schließen',
+    click:  function(){
+      mainWindow.close()
+    }
+  }
+])
+
 function createTray() {
-  tray = new Tray('./marvin16x16.png');
+  tray = new Tray('./resources/files/images/marvin16x16.png');
   tray.setToolTip('Marvin')
+  tray.setContextMenu(trayMenu);
 }
 
 // Keep a reference for dev mode
 let dev = false
+
+// Broken:
+// if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath)) {
+//   dev = true
+// }
 
 if (process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'development') {
   dev = true
@@ -187,6 +208,15 @@ function createWindow(dimensions) {
     }
   })
 
+  mainWindow.on('close', function (e) {
+    if(mainWindow.isMinimized()) {
+      app.quit()
+    } else {
+      e.preventDefault()
+      mainWindow.minimize();
+
+    }
+  })
   mainWindow.on('closed', function () {
     mainWindow = null;
   })
