@@ -1,5 +1,5 @@
 // Config
-import configImport from '/home/rbrt/WebstormProjects/marvin/resources/files/config/config.json'
+import configImport from '/resources/files/config/config.json'
 
 // Components
 import {Log} from "../components/Log";

@@ -92,9 +92,10 @@ export async function fillTemplate(log, objectData) {
 
     // Write document to disk.
     if (buffer) {
+      const normCharacterObjectId = replaceSpecialCharacters(objectData.inventarnummer)
       const normCharacterTitle = replaceSpecialCharacters(objectData.titel)
       const normSpacingTitle = normCharacterTitle.replace(/[^A-Z0-9]+/ig, "_");
-      const filename = objectData.datum + '_' + normSpacingTitle + '.docx'
+      const filename = objectData.datum + '_' + normCharacterObjectId + '_' + normSpacingTitle + '.docx'
       fs.writeFileSync(path.join(documentPath, filename), buffer)
       log = {
         ...log,

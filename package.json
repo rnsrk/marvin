@@ -33,8 +33,25 @@
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
+    "installer": "electron-builder",
     "package": "npm run build",
     "postpackage": "electron-packager ./ --ignore 'resources/files' --out=./builds --asar --overwrite --platform win32,linux --icon marvin.ico --extra-resource 'resources/files'"
+  },
+  "build": {
+    "appId": "marvin",
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "marvin256x256.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "installerIcon": "marvin.ico",
+      "uninstallerIcon": "marvin.ico",
+      "uninstallDisplayName": "Marvin-Uninstaller",
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
@@ -61,8 +78,11 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "electron": "^20.0.3",
+    "electron-builder": "^23.3.3",
     "electron-devtools-installer": "^3.2.0",
     "electron-packager": "^15.5.1",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-winstaller": "^5.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.1",

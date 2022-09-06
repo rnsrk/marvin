@@ -19,9 +19,10 @@ let trayMenu = Menu.buildFromTemplate([
     }
   },
   {
-    label: 'Schließen',
+    label: 'Beenden',
     click:  function(){
       mainWindow.close()
+      app.quit()
     }
   }
 ])
@@ -30,6 +31,9 @@ function createTray() {
   tray = new Tray('./resources/files/images/marvin16x16.png');
   tray.setToolTip('Marvin')
   tray.setContextMenu(trayMenu);
+  tray.on('click', function() {
+    tray.popUpContextMenu();
+  })
 }
 
 // Keep a reference for dev mode
@@ -198,6 +202,7 @@ function createWindow(dimensions) {
 
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
+
     mainWindow.show()
     // Open the DevTools automatically if developing
     if (dev) {
