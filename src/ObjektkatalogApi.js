@@ -18,12 +18,14 @@ class ObjektkatalogApi {
     masse: '',
     materialTechnik: '',
     titel: '',
+    wisskiUri: '',
   };
   response;
   visibility;
 
 
   // Get data from objektkatalog.gnm.de.
+
   async getData(objectId) {
     if (objectId) {
       // RESTful GET.
@@ -50,6 +52,7 @@ class ObjektkatalogApi {
               eid: responseJson[0]['eid'],
               allgemeineBezeichnung: responseJson[0]['fc6392714594e73ddb2fa363815a8fdf'],
               beschreibung: responseJson[0]['f81f557caccf45074edfb65ff077011f'],
+              bilder: responseJson[0]['f41dae62df47283958f605716d141ebf'],
               darstellung: responseJson[0]['f217e1053b1e29411d4b00f3b1e1d52b'],
               erwerbsmethode: responseJson[0]['fa4aa035d411275cd36a2fbb5c159a2c'],
               fruehstes: responseJson[0]['ff4a178095c895a12fce6320c04ba0b0'],
@@ -71,6 +74,7 @@ class ObjektkatalogApi {
               titel: responseJson[0]['f2049b2456b20f8fd80f714e154f1d47'],
               unterbringung: responseJson[0]['f15265e39237868a568ee63453492b17'],
               vitrinentext: responseJson[0]['fe5e3ff18aedf1d25c639dc79fb24ad1'],
+              wisskiUri: responseJson[0]['wisski_uri'][0]['value'],
               zustandsbeschreibung: responseJson[0]['f54b6da6006ea444c33a348b8c4370a8']
             }
             break;
@@ -116,6 +120,16 @@ class ObjektkatalogApi {
       }
       this.visibility = false
       return [this.receivedData, this.visibility]
+    }
+
+    // Bilder
+    let bilder  =[];
+    if (this.raw.bilder.length !== 0) {
+      for (const bildIndex in this.raw.bilder) {
+        bilder.push(this.raw.bilder[bildIndex].url)
+      }
+    } else {
+      this.bilder = null;
     }
 
     // Datum
@@ -187,9 +201,11 @@ class ObjektkatalogApi {
       })
     }
 
+
     // Json with important data.
     this.receivedData = {
       ...this.receivedData,
+      bilder: bilder,
       datum: todayFormat,
       titel: titel,
       hersteller: hersteller,
@@ -198,6 +214,7 @@ class ObjektkatalogApi {
       inventarnummer: inventarnummer,
       materialTechnik: materialTechnik,
       masse: masse,
+      wisskiUri: this.raw.wisskiUri,
       httpStatus: 200,
     }
     this.visibility = true

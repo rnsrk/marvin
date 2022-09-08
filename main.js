@@ -142,6 +142,16 @@ let mainMenu = Menu.buildFromTemplate(
   ]
 )
 
+const RESOURCES_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'assets')
+  : path.join(__dirname, '../../assets');
+
+console.log(process.resourcesPath);
+console.log(__dirname);
+
+const getAssetPath = (paths) => {
+  return path.join(RESOURCES_PATH, paths);
+};
 
 function createWindow(dimensions) {
   if (dev !== true) {
@@ -255,5 +265,3 @@ app.on('activate', () => {
   }
 
 })
-
-// IPC-Channel handling

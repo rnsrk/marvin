@@ -33,25 +33,9 @@
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
-    "installer": "electron-builder",
+    "pack:installer": "electron-builder build -lw",
     "package": "npm run build",
-    "postpackage": "electron-packager ./ --ignore 'resources/files' --out=./builds --asar --overwrite --platform win32,linux --icon marvin.ico --extra-resource 'resources/files'"
-  },
-  "build": {
-    "appId": "marvin",
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "marvin256x256.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "installerIcon": "marvin.ico",
-      "uninstallerIcon": "marvin.ico",
-      "uninstallDisplayName": "Marvin-Uninstaller",
-      "allowToChangeInstallationDirectory": true
-    }
+    "postpackage": "electron-packager ./ --ignore \"(resources|builds|installer)\" --out=./builds --overwrite --platform win32,linux --icon marvin.ico --extra-resource 'resources/files'"
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
@@ -60,10 +44,12 @@
     "@mui/material": "^5.10.2",
     "about-window": "^1.15.2",
     "docx-templates": "^4.9.2",
+    "image-resize-compress": "^1.0.8",
     "postcss": "^8.4.16",
     "react": "^18.2.0",
     "react-async-devtools": "^10.0.1",
     "react-dom": "^18.2.0",
+    "react-image-gallery": "^1.2.9",
     "react-loader-spinner": "^5.3.3",
     "react-router-dom": "^6.3.0",
     "replace-special-characters": "^1.2.6",
@@ -91,6 +77,7 @@
     "postcss-nested": "^5.0.6",
     "postcss-preset-env": "^7.8.0",
     "postcss-pxtorem": "^6.0.0",
+    "source-map-support": "^0.5.21",
     "style-loader": "^3.3.1",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",

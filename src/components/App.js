@@ -1,6 +1,13 @@
 // Components
 import {DataForm} from "./DataForm";
 import {Log} from "./Log"
+
+
+// CSS
+import '../assets/css/styles.css'
+import {LoadingIcon} from "./LoadingIcon";
+
+// Icons
 import SettingsIcon from '@mui/icons-material/Settings';
 
 // Modules
@@ -9,10 +16,6 @@ import ObjektkatalogApi from "../ObjektkatalogApi";
 // React
 import {NavLink} from "react-router-dom";
 import React, {useState} from 'react'
-
-// CSS
-import '../assets/css/styles.css'
-import {LoadingIcon} from "./LoadingIcon";
 
 
 ////////////////////
@@ -91,8 +94,21 @@ export const App = () => {
           await setLogState({
             log: {
               status: 'red',
-              message: 'Objektkatalog nicht erreichbar!',
+              message: 'Objektkatalog kann sich nicht um die Anfrage kümmern!',
               code: '503',
+              tip: 'Vielleicht hat der Katalog gerade sehr viele Zugriffe, probieren Sie es später noch einmal.',
+            }, // with message, code, tip
+            logClass: 'active'
+          })
+          // Hide Loading
+          setIsLoading(false)
+          return;
+        case 404:
+          await setLogState({
+            log: {
+              status: 'red',
+              message: 'Objektkatalog nicht erreichbar!',
+              code: '404',
               tip: 'Sind sie mit dem Internet verbunden und ist der Objektkatalog online?',
             }, // with message, code, tip
             logClass: 'active'
@@ -170,34 +186,38 @@ export const App = () => {
           <NavLink className={'nav-icon'} to="/settings"><SettingsIcon/></NavLink>
         </nav>
       </header>
-      <main>
-        <div className={"container"}>
-          <form id={"object-id-form"} className={"flex-wrap"}>
-            <div className={"center column flex justify-content-space-between "}>
-              <label htmlFor="document-type" className={"center cut v-distance"}>Dokumenttyp:</label>
-              <select name="documentType" id="document-type" className={"input-field center cut"}>
-                <option value="rp">Restaurierungsprotokoll</option>
-                <option value="lbb">Leihgabenbegleitblatt</option>
-                <option value="a">Analyse</option>
-              </select>
-            </div>
-            <div className={"center column flex full justify-content-space-between"}>
-              <label htmlFor={"object-id"} className={"center cut v-distance"}>Inventarnummer:</label>
-              <input
-                id={"object-id"}
-                name="objectId"
-                type={"text"}
-                className={"center cut input-field"}
-              />
-            </div>
+      <main className={"bottom-distance"}>
+        <h3 className={"flex-center"}>Marvin</h3>
+        <section>
+          <div className={"container"}>
+            <form id={"object-id-form"} className={"flex-wrap"}>
+              <div className={"center column flex justify-content-space-between "}>
+                <label htmlFor="document-type" className={"center cut v-distance"}>Dokumenttyp:</label>
+                <select name="documentType" id="document-type" className={"input-field center cut"}>
+                  <option value="rp">Restaurierungsprotokoll</option>
+                  <option value="lbb">Leihgabenbegleitblatt</option>
+                  <option value="a">Analyse</option>
+                </select>
+              </div>
+              <div className={"center column flex full justify-content-space-between"}>
+                <label htmlFor={"object-id"} className={"center cut v-distance"}>Inventarnummer:</label>
+                <input
+                  id={"object-id"}
+                  name="objectId"
+                  type={"text"}
+                  className={"center cut input-field"}
+                />
+              </div>
 
-            <button className={'send-button center top-distance'} onClick={getDataAndAskForCheckUpClickHandler}>
-              Dokument vorbereiten
-            </button>
+              <button className={'send-button center top-distance'} onClick={getDataAndAskForCheckUpClickHandler}>
+                Dokument vorbereiten
+              </button>
 
-          </form>
-        </div>
-        <LoadingIcon isLoading={isLoading}/>
+            </form>
+          </div>
+          <LoadingIcon isLoading={isLoading}/>
+        </section>
+        <section>
         <DataForm
           checkUpVisibility={checkUpVisibility}
           objectData={objectData}
@@ -205,6 +225,7 @@ export const App = () => {
           logState={logState}
           setLogState={setLogState}
         />
+        </section>
       </main>
       <footer>
         {/* We give state and state setter of the parent as params to the child components, so that child events can change parent states */}

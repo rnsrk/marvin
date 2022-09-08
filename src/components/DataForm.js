@@ -1,5 +1,8 @@
+// Components
+import {Galary} from './Galary'
+
 // Modules
-import {fillTemplate} from "../DocxInserter";
+import {DocCreator} from "../DocCreator";
 
 // React
 import React from 'react'
@@ -98,7 +101,10 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
   // Fill the template and save it.
   const fillTemplateClickHandler = async (e) => {
     e.preventDefault();
-    log = await fillTemplate(logState, objectData);
+    const docCreator = new DocCreator(logState, objectData)
+    log = await docCreator.fillTemplate();
+    const metsMods = await docCreator.createMetsMods();
+
     // Set new state of log div with message and visibility class
     setLogState({
       log: log,
@@ -107,8 +113,11 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
   }
 
   // Renders data form
-  return (<div className={'checkup ' + (checkUpVisibility ? 'open' : 'closed')}>
-      <form className={'flex column '}>
+  return (
+    <div className={'checkup ' + (checkUpVisibility ? 'open' : 'closed')}>
+      <form className={'flex column pd-05rem'}>
+        <Galary objectData={objectData}/>
+        <div>
         <div >
           <label htmlFor={'template-datum'} >Datum</label>
           <input
@@ -197,6 +206,7 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
             defaultValue={objectData.masse}
             onChange={masseChangeHandler}
           />
+        </div>
         </div>
         <button
           type={"submit"}

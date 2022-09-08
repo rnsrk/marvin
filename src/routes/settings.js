@@ -1,8 +1,8 @@
-// Config
-import configImport from '/resources/files/config/config.json'
+// Modules
+import path from "path";
 
-// Components
-import {Log} from "../components/Log";
+// Config
+import configImport from '/src/assets/config/config.json'
 
 // Icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -48,8 +48,9 @@ export default function Settings() {
       rootDir: rootDirFromWindow
     }
     if (rootDirFromWindow) {
+      console.log(__dirname);
       let message;
-      await writeFile('resources/files/config/config.json', JSON.stringify(config2Safe, null, 2), (err) => {
+      await writeFile('/resources/files/config/config.json', JSON.stringify(config2Safe, null, 2), (err) => {
         if (err) {
           message = err;
         } else {
@@ -68,19 +69,22 @@ export default function Settings() {
         <NavLink className={'nav-icon'} to="/"><ArrowBackIosIcon/></NavLink>
       </header>
       <main>
-        <form onSubmit={selectFolderHandler}>
-          <label htmlFor={"output-root"}>
-            Hauptverzeichnis
-          </label>
-          <div className="col-sm-10 d-flex align-items-center flex sticky-edit">
-            <Input config={config} setConfig={setConfig}/>
-            <button type="submit" className="edit-button text-end">
-              <i className="fas fa-edit d-block">
-                <EditIcon sx={{fontSize: 16}} color={'#d5d5d5'}/>
-              </i>
-            </button>
-          </div>
-        </form>
+        <section className={"flex-center column"}>
+          <h3>Einstellungen</h3>
+          <form onSubmit={selectFolderHandler} className={"pd-05rem"}>
+            <label className={"center cut v-distance"} htmlFor={"output-root"}>
+              Hauptverzeichnis
+            </label>
+            <div className="align-items-center flex">
+              <Input config={config} setConfig={setConfig}/>
+              <button type="submit" className="edit-button text-end">
+                <i className="fas fa-edit d-block">
+                  <EditIcon sx={{fontSize: 16}} color={'#d5d5d5'}/>
+                </i>
+              </button>
+            </div>
+          </form>
+        </section>
       </main>
       <footer>
       </footer>

@@ -1,6 +1,7 @@
 # Build folder and files #
 ##########################
 builds/
+installers/
 
 # Development folders and files #
 #################################

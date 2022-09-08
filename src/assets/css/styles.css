@@ -1,4 +1,7 @@
+
+ /* Imports */
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import "react-image-gallery/styles/css/image-gallery.css";
 
 a {
   color: #d5d5d5;
@@ -23,6 +26,10 @@ body {
 .checkup {
   transition: height 1s;
   height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 
 .closed{
@@ -43,10 +50,6 @@ body {
   max-width: max-content;
 }
 
-div {
-  padding: 0.5em;
-}
-
 .edit-button {
   background-color: #e30f27;
   color: #d5d5d5;
@@ -55,6 +58,7 @@ div {
   border: unset;
   padding: 0 4px;
   height: 1.5rem;
+  border-radius: 0 .1875rem .1875rem 0;
 }
 
 .edit-input {
@@ -85,6 +89,23 @@ div {
 
 .green {
   background-color: darkgreen;
+}
+
+h3 {
+  color: #464646;
+}
+
+.image-gallery {
+  flex: .5 .5 50%;
+}
+
+.image-gallery-thumbnails-container {
+  display: flex;
+  justify-content: center;
+}
+
+.image-gallery-slide-wrapper {
+  margin-bottom: .5rem;
 }
 
 .inactive {
@@ -129,6 +150,10 @@ input.edit-input:not(:disabled) {
   font-family: "Open Sans", sans-serif;
 }
 
+ .justify-content-center {
+   display: flex;
+   justify-content: center;
+ }
 
 
 .justify-content-end {
@@ -168,13 +193,16 @@ label {
 }
 
 .open {
-  height: 610px;
+  height: 100%;
   overflow: hidden;
 }
 p {
   margin: 0;
 }
 
+.pd-05rem {
+  padding: .5rem;
+}
 .position-absolute {
   position: absolute;
 }
@@ -223,15 +251,15 @@ select {
 }
 
 .settings-div {
-  background-color: #d5d5d5;
+  background-color: #f2f2f2;
   color: black;
-  width: 300px;
+  width: 388px;
   border-top: none;
   border-right: none;
   border-left: none;
   border-bottom: 0.125rem solid #e30019;
-  border-radius: 0.1875rem;
-  overflow-x: scroll;
+ border-radius: .1875rem 0 0 .1875rem;
+  overflow-x: auto;
   white-space:nowrap;
 }
 
@@ -256,10 +284,13 @@ textarea.select-folder-field, textarea.select-folder-field:focus, input.select-f
 }
 
 .v-distance {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
+.bottom-distance {
+  margin-bottom: 1rem;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
