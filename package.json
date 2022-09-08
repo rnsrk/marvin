@@ -33,17 +33,29 @@
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
-    "installer": "electron-builder",
+    "installer": "electron-builder -lw",
     "package": "npm run build",
     "postpackage": "electron-packager ./ --ignore 'resources/files' --out=./builds --asar --overwrite --platform win32,linux --icon marvin.ico --extra-resource 'resources/files'"
   },
   "build": {
-    "appId": "marvin",
+    "appId": "org.nasarek.marvin",
+    "extraResources": [{
+      "from": "resources/files",
+      "to": "files"
+    }],
     "win": {
       "target": [
         "nsis"
       ],
       "icon": "marvin256x256.ico"
+    },
+    "linux": {
+
+      "target": [
+        "deb"
+      ],
+      "icon": "marvin256x256.png",
+      "category": "Utility"
     },
     "nsis": {
       "oneClick": false,

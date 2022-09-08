@@ -92,10 +92,17 @@ export async function fillTemplate(log, objectData) {
 
     // Write document to disk.
     if (buffer) {
-      const normCharacterObjectId = replaceSpecialCharacters(objectData.inventarnummer)
-      const normCharacterTitle = replaceSpecialCharacters(objectData.titel)
-      const normSpacingTitle = normCharacterTitle.replace(/[^A-Z0-9]+/ig, "_");
-      const filename = objectData.datum + '_' + normCharacterObjectId + '_' + normSpacingTitle + '.docx'
+      // ObjectId normalisation.
+      const normCharacterObjectId = replaceSpecialCharacters(objectData.inventarnummer);
+      const normSpacingObjectId = normCharacterObjectId.replace("__", "_");
+      // Title normalisation
+      const replaceEszettTitle = objectData.titel.replace("ß", "ss");
+      const normCharacterTitle = replaceSpecialCharacters(replaceEszettTitle);
+      const normSingleSpaceTitle = normCharacterTitle.replace("__", "_");
+      const normSpacingTitle = normSingleSpaceTitle.replace(/[^A-Z0-9\-]+/ig, "_");
+      const normLengthTitle = normSpacingTitle.slice(0,50);
+
+      const filename = normSpacingObjectId + '__' + normLengthTitle + '__' + objectData.datum  + '__' + objectData.dokumenttyp + '.docx'
       fs.writeFileSync(path.join(documentPath, filename), buffer)
       log = {
         ...log,
