@@ -1,11 +1,11 @@
 // Modules
 import createReport from 'docx-templates';
-import fs, {writeFile} from 'fs';
 import {mkdir} from 'node:fs/promises';
 import path from 'path';
 import replaceSpecialCharacters from "replace-special-characters";
 
 import {parseString, Builder} from 'xml2js';
+import {FileLoader} from "./FileLoader";
 
 
 ////////////////////
@@ -24,9 +24,11 @@ class DocCreator {
     // Get DateTime.
     this.today = new Date();
 
+    // FileLoader
+    this.fileLoader = new FileLoader()
+
     // Get config file and parse to json.
-    this.configFile = fs.readFileSync('/resources/files/config/config.json')
-    this.configJson = JSON.parse(this.configFile.toString())
+    this.configFile = this.fileLoader.getConfigFile()
 
     // Choose the template for selected document type.
     switch (objectData.dokumenttyp) {
@@ -53,19 +55,21 @@ class DocCreator {
 
     // Title normalisation
     const replaceEszettTitle = objectData.titel.replace("ß", "-ss-");
-    let replaceUmlauteTitle = replaceEszettTitle.replace(/[^Ä]+/ig, "Ae");
-    replaceUmlauteTitle = replaceUmlauteTitle.replace(/[^ä]+/ig, "ae");
-    replaceUmlauteTitle = replaceUmlauteTitle.replace(/[^Ö]+/ig, "Oe");
-    replaceUmlauteTitle = replaceUmlauteTitle.replace(/[^ö]+/ig, "oe");
-    replaceUmlauteTitle = replaceUmlauteTitle.replace(/[^Ü]+/ig, "Ue");
-    replaceUmlauteTitle = replaceUmlauteTitle.replace(/[^ü]+/ig, "ue");
+    let replaceUmlauteTitle = replaceEszettTitle.replace("Ä", "Ae");
+    replaceUmlauteTitle = replaceUmlauteTitle.replace("ä", "ae");
+    replaceUmlauteTitle = replaceUmlauteTitle.replace("Ö", "Oe");
+    replaceUmlauteTitle = replaceUmlauteTitle.replace("ö", "oe");
+    replaceUmlauteTitle = replaceUmlauteTitle.replace("Ü", "Ue");
+    replaceUmlauteTitle = replaceUmlauteTitle.replace("ü", "ue");
     const normCharacterTitle = replaceSpecialCharacters(replaceUmlauteTitle);
     const normSingleSpaceTitle = normCharacterTitle.replace("__", "_");
     const normSpacingTitle = normSingleSpaceTitle.replace(/[^A-Z0-9\-]+/ig, "_");
     this.normTitle = normSpacingTitle.slice(0, 50);
 
     const folderName = this.normObjectId + '__' + this.normTitle
-    this.objectPath = path.join(this.configJson.rootDir, folderName);
+
+    this.objectPath = path.join(this.configFile.rootDir, folderName);
+
     this.documentPath = path.join(this.objectPath, this.documentInfo.documentType, objectData.datum);
     this.filename = this.normObjectId + '__' + this.normTitle + '__' + this.objectData.datum + '__' + this.objectData.dokumenttyp;
     this.filenameWithExtension = this.filename + '.docx'
@@ -78,13 +82,12 @@ class DocCreator {
   async fillTemplate() {
     // Variables
     let buffer;
-    let configJson
 
     // Create docx document if there was a response.
     if (this.objectData.httpStatus === 200) {
       try {
         // Read template.
-        const template = fs.readFileSync(path.join('/resources/files/templates/', this.documentInfo.templateFile));
+        const template = fs.readFileSync(path.resolve(this.fileLoader.getTemplateDir(), this.documentInfo.templateFile));
 
         // Create report.
         buffer = await createReport({
@@ -110,8 +113,8 @@ class DocCreator {
       }
 
       try {
-        const createDocumentPath = await mkdir(this.documentPath, {recursive: true});
-        const createTemporaryWorkDirPath = await mkdir(this.temporaryWorkDirPath, {recursive: true});
+        await mkdir(this.documentPath, {recursive: true});
+        await mkdir(this.temporaryWorkDirPath, {recursive: true});
       } catch (err) {
         // Set error log.
         this.log = {
@@ -148,15 +151,7 @@ class DocCreator {
         <mets:mets
           xmlns:mets="http://www.loc.gov/METS/"
           xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="info:lc/xmlns/premis-v2
-            http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd
-            http://www.loc.gov/mods/v3
-            http://www.loc.gov/standards/mods/v3/mods-3-6.xsd
-            http://www.loc.gov/METS/
-            http://www.loc.gov/standards/mets/version17/mets.v1-7.xsd
-            http://www.loc.gov/mix/v10
-            http://www.loc.gov/standards/mix/mix10/mix10.xsd">
+          >
           <mets:metsHdr createDate="${this.today}">
             <mets:agent
                 type="other"
@@ -455,11 +450,9 @@ class DocCreator {
         metModsXml = result;
       }
     );
-    console.log(metModsXml, 'from string');
 
     const builder = new Builder()
     metModsXml = builder.buildObject(metModsJson);
-    console.log(metModsXml, 'from Json')
 
     const fileName = `.metsMods__${this.normObjectId}__${this.normTitle}.xml`
     fs.writeFileSync(path.join(this.documentPath,fileName),metModsXml.toString(),

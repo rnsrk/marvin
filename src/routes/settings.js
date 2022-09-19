@@ -1,8 +1,9 @@
 // Modules
-import path from "path";
+import {FileLoader} from "../FileLoader";
 
-// Config
-import configImport from '/src/assets/config/config.json'
+// Electron
+const electron = window.require('electron');
+const ipcRenderer = electron.ipcRenderer;
 
 // Icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -20,37 +21,43 @@ import {writeFile} from "fs";
 ////////////////////
 
 export default function Settings() {
-  // States
-  const [config, setConfig] = useState(
-    configImport
-  )
+  const fileLoader = new FileLoader()
+  const initialConfig = fileLoader.getConfigFile()
+  console.log(initialConfig)
+  const getConfigPath = async (path) => {
+    return await ipcRenderer.invoke('assetPath:getAssetPath', path)
+  }
 
+// States
+  const [configFile, setConfigFile] = useState(
+    initialConfig
+  )
   const [restart, setRestart] = useState(
     false
   )
 
-  //Functions
+//Functions
   async function selectFolderHandler(e) {
     e.preventDefault()
     const rootDirFromWindow = await window.openFile();
-    setConfig((prevState) => {
+    setConfigFile((prevState) => {
       return {
         ...prevState,
         rootDir: rootDirFromWindow
       }
     })
-    const saveResult = await saveInputClickHandler(rootDirFromWindow)
+    await saveInputClickHandler(rootDirFromWindow)
   }
 
-  // Handler
+// Handler
   async function saveInputClickHandler(rootDirFromWindow) {
     let config2Safe = {
       rootDir: rootDirFromWindow
     }
     if (rootDirFromWindow) {
-      console.log(__dirname);
       let message;
-      await writeFile('/resources/files/config/config.json', JSON.stringify(config2Safe, null, 2), (err) => {
+      const configPath = await getConfigPath('config/config.json')
+      await writeFile(configPath, JSON.stringify(config2Safe, null, 2), (err) => {
         if (err) {
           message = err;
         } else {
@@ -59,6 +66,7 @@ export default function Settings() {
         return message
       })
       setRestart(true)
+      return restart;
     }
   }
 
@@ -76,7 +84,7 @@ export default function Settings() {
               Hauptverzeichnis
             </label>
             <div className="align-items-center flex">
-              <Input config={config} setConfig={setConfig}/>
+              <Input configFile={configFile}/>
               <button type="submit" className="edit-button text-end">
                 <i className="fas fa-edit d-block">
                   <EditIcon sx={{fontSize: 16}} color={'#d5d5d5'}/>

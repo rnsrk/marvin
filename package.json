@@ -33,9 +33,9 @@
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
-    "pack:installer": "electron-builder build -lw",
+    "pack:installer": "electron-builder build -l",
     "package": "npm run build",
-    "postpackage": "electron-packager ./ --ignore \"(resources|builds|installer)\" --out=./builds --overwrite --platform win32,linux --icon marvin.ico --extra-resource 'resources/files'"
+    "postpackage": "electron-packager ./ --ignore \"(resources|builds|installer)\" --out=./builds --overwrite --platform linux --icon marvin.ico"
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",

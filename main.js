@@ -3,13 +3,18 @@
 // Import parts of electron to use
 const {app, BrowserWindow, dialog, ipcMain, Menu, screen, Tray} = require('electron')
 const openAboutWindow = require('about-window').default
-const path = require('path')
-const url = require('url')
+const path = require('path');
+const fs = require('fs');
+const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow, tray;
 let devBrowserProperties = {};
+
+const ASSET_PATH = app.isPackaged
+  ? path.resolve(process.resourcesPath, 'app/src/assets')
+  : path.resolve(__dirname, 'src/assets');
 
 let trayMenu = Menu.buildFromTemplate([
   {
@@ -27,8 +32,10 @@ let trayMenu = Menu.buildFromTemplate([
   }
 ])
 
+ const RESSOURCE_PATH= fs.existsSync(ASSET_PATH) ? ASSET_PATH : 'resources/files' ;
+
 function createTray() {
-  tray = new Tray('./resources/files/images/marvin16x16.png');
+  tray = new Tray(path.resolve(RESSOURCE_PATH, 'images/marvin16x16.png'));
   tray.setToolTip('Marvin')
   tray.setContextMenu(trayMenu);
   tray.on('click', function() {
@@ -60,11 +67,17 @@ if (process.platform === 'win32') {
 async function handleFileOpen() {
   const {canceled, filePaths} = await dialog.showOpenDialog(mainWindow, {properties: ['openDirectory']})
   if (canceled) {
-    return
+    return false
   } else {
     return filePaths[0]
   }
 }
+
+// Constants
+
+const getAssetPath = async (assetPath) => {
+  return path.resolve(ASSET_PATH, assetPath);
+};
 
 // Build main menu from file.
 let mainMenu = Menu.buildFromTemplate(
@@ -142,22 +155,11 @@ let mainMenu = Menu.buildFromTemplate(
   ]
 )
 
-const RESOURCES_PATH = app.isPackaged
-  ? path.join(process.resourcesPath, 'assets')
-  : path.join(__dirname, '../../assets');
-
-console.log(process.resourcesPath);
-console.log(__dirname);
-
-const getAssetPath = (paths) => {
-  return path.join(RESOURCES_PATH, paths);
-};
-
 function createWindow(dimensions) {
   if (dev !== true) {
     devBrowserProperties = {
       fullscreenable: false,
-      resizable: false,
+      resizable: true,
     }
 
   }
@@ -173,7 +175,7 @@ function createWindow(dimensions) {
     y: 0,
     width: appWidth,
     height: appHeight,
-    icon: __dirname + '/marvin.ico',
+    icon: path.resolve(RESSOURCE_PATH, 'images/marvin.ico'),
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -221,10 +223,12 @@ function createWindow(dimensions) {
         .catch(err => console.log('Error loading React DevTools: ', err))
       mainWindow.webContents.openDevTools()
     }
+    mainWindow.webContents.openDevTools()
   })
 
   mainWindow.on('close', function (e) {
     if(mainWindow.isMinimized()) {
+      app.quit()
       app.quit()
     } else {
       e.preventDefault()
@@ -235,6 +239,7 @@ function createWindow(dimensions) {
   mainWindow.on('closed', function () {
     mainWindow = null;
   })
+
 }
 
 // This method will be called when Electron has finished
@@ -242,6 +247,10 @@ function createWindow(dimensions) {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   ipcMain.handle('dialog:openFile', handleFileOpen)
+  ipcMain.handle('assetPath:getAssetPath', async (event, assetPath) => {
+    return await getAssetPath(assetPath)
+  })
+
   const display = screen.getPrimaryDisplay();
   const dimensions = display.size;
   createWindow(dimensions);

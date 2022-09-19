@@ -86,7 +86,7 @@ export const App = () => {
 
     if (objectId) {
       // Get object data from objektkatalog.gnm.de.
-      const [receivedObjectData, receivedVisibility] = await objektkatalogApi.getData(objectId);
+      const receivedObjectData = await objektkatalogApi.getData(objectId);
       // If no response from Objektkatalog.
       switch (receivedObjectData.httpStatus) {
         // Server not reachable.
