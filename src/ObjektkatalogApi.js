@@ -39,6 +39,7 @@ class ObjektkatalogApi {
         return returnedResponse
       }).catch((error) => {
         // Error while fetch.
+        console.log(error)
         return {status: 503};
       });
 
@@ -119,7 +120,7 @@ class ObjektkatalogApi {
         httpStatus: 500,
       }
       this.visibility = false
-      return [this.receivedData, this.visibility]
+      return this.receivedData
     }
 
     // Bilder
@@ -136,7 +137,7 @@ class ObjektkatalogApi {
     // Default date of today
     let today = new Date()
     let todayFormat = today.getFullYear() + '-' + (String(today.getMonth() + 1).padStart(2, '0')) + '-' + String(today.getDate()).padStart(2, '0');
-    ;
+
 
     // Inventarnummer
     let inventarnummer;
