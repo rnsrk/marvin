@@ -86,7 +86,7 @@ class ObjektkatalogApi {
               httpStatus: 404,
             }
             this.visibility = false
-            return [this.receivedData, this.visibility]
+            return this.receivedData
           }
         case 408:
           // No response, no data form.
@@ -95,7 +95,7 @@ class ObjektkatalogApi {
             httpStatus: 408,
           }
           this.visibility = false
-          return [this.receivedData, this.visibility]
+          return this.receivedData
         case 503:
           // Objektkatalog not reachable.
           this.receivedData = {
@@ -103,7 +103,7 @@ class ObjektkatalogApi {
             httpStatus: 503,
           }
           this.visibility = false
-          return [this.receivedData, this.visibility]
+          return this.receivedData
         default:
           // Any other error
           this.receivedData = {
@@ -111,7 +111,7 @@ class ObjektkatalogApi {
             httpStatus: 500,
           }
           this.visibility = false
-          return [this.receivedData, this.visibility]
+          return this.receivedData
       }
     } else {
       // No ObjectId, no data form.
@@ -219,7 +219,7 @@ class ObjektkatalogApi {
       httpStatus: 200,
     }
     this.visibility = true
-    return [this.receivedData, this.visibility]
+    return this.receivedData
   }
 }
 

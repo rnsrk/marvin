@@ -2,18 +2,18 @@
   "appId": "org.nasarek.marvin",
   "win": {
     "target": "NSIS",
-    "icon": "marvin256x256.ico"
+    "icon": "src/assets/images/marvin256x256.ico"
   },
   "nsis": {
     "oneClick": false,
-    "installerIcon": "marvin256x256.ico",
-    "uninstallerIcon": "marvin256x256.ico",
+    "installerIcon": "src/assets/images/marvin256x256.ico",
+    "uninstallerIcon": "src/assets/images/marvin256x256.ico",
     "allowToChangeInstallationDirectory": true
   },
   "linux": {
     "target": "deb",
     "category": "Utility",
-    "icon": "marvin256x256.png"
+    "icon": "src/assets/images/marvin256x256.png"
   },
   "files": [
     "*.js",
@@ -23,10 +23,5 @@
     "./dist/main.js",
     "./dist/main.js.LICENSE.txt",
     "node_modules"
-  ],
-  "extraResources": [{
-    "from": "resources/files",
-    "to": "files"
-  }
   ]
 }

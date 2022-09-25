@@ -33,9 +33,9 @@
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
-    "pack:installer": "electron-builder build -l",
+    "pack:installer": "electron-builder build -w",
     "package": "npm run build",
-    "postpackage": "electron-packager ./ --ignore \"(resources|builds|installer)\" --out=./builds --overwrite --platform linux --icon marvin.ico"
+    "postpackage": "electron-packager ./ --ignore \"(resources|builds|installer)\" --out=./builds --overwrite --platform win32 --icon src/assets/images/marvin.ico"
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
@@ -44,6 +44,7 @@
     "@mui/material": "^5.10.2",
     "about-window": "^1.15.2",
     "docx-templates": "^4.9.2",
+    "electron-store": "^8.1.0",
     "image-resize-compress": "^1.0.8",
     "postcss": "^8.4.16",
     "react": "^18.2.0",

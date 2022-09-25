@@ -3,6 +3,7 @@ import {Galary} from './Galary'
 
 // Modules
 import {DocCreator} from "../DocCreator";
+import Store from 'electron-store';
 
 // React
 import React from 'react'
@@ -17,6 +18,9 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
 
   // Variables
   let log;
+
+  // Store
+  const store = new Store()
 
   // Handlers
   // Change handler response to every keystroke!
@@ -101,15 +105,29 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
   // Fill the template and save it.
   const fillTemplateClickHandler = async (e) => {
     e.preventDefault();
-    const docCreator = new DocCreator(logState, objectData)
-    log = await docCreator.fillTemplate();
-    const metsMods = await docCreator.createMetsMods();
+    const configJson = store.get('configJson')
+    if (configJson.rootDir == null) {
+      setLogState(
+        {
+          log: {
+            status: 'red',
+            message: 'Keine Hauptverzeichnis für die Ordnerstruktur angegeben!',
+            tip: 'Bitte zu den Einstellungen wechseln, und dort ein Verzeichnis auswählen!'
+          },
+          logStatus: 'active'
+        }
+      )
+    } else {
+      const docCreator = new DocCreator(logState, objectData)
+      log = await docCreator.fillTemplate();
+      await docCreator.createMetsMods();
 
-    // Set new state of log div with message and visibility class
-    setLogState({
-      log: log,
-      logStatus: 'active'
-    });
+      // Set new state of log div with message and visibility class
+      setLogState({
+        log: log,
+        logStatus: 'active'
+      });
+    }
   }
 
   // Renders data form
@@ -118,101 +136,102 @@ export const DataForm = ({checkUpVisibility, objectData, setObjectData, logState
       <form className={'flex column pd-05rem'}>
         <Galary objectData={objectData}/>
         <div>
-        <div >
-          <label htmlFor={'template-datum'} >Datum</label>
-          <input
-            id={"template-datum"}
-            name={"datum"}
-            type={"date"}
-            className={"full input-field"}
-            defaultValue={objectData.datum}
-            onChange={datumChangeHandler}
-          />
-        </div>
-        <div>
-          <label htmlFor={'template-inventarnummer'} >Inventarnummer</label>
-          <input
-            id={"template-inventarnummer"}
-            name={"inventarnummer"}
-            type={"text"}
-            className={"full input-field"}
-            defaultValue={objectData.inventarnummer}
-            onChange={inventarnummerChangeHandler}
-          />
-        </div>
-        <div >
-          <label htmlFor={'template-titel'}>Titel</label>
-          <input
-            id={"template-titel"}
-            name={"titel"}
-            type={"text"}
-            className={"full input-field"}
-            defaultValue={objectData.titel}
-            onChange={titelChangeHandler}
-          />
-        </div>
-        <div>
-          <label htmlFor={'template-hersteller'}>Hersteller</label>
-          <input
-            id={"template-hersteller"}
-            name={"hersteller"}
-            type={"text"}
-            className={"full input-field"}
-            defaultValue={objectData.hersteller}
-            onChange={herstellerChangeHandler}
-          />
-        </div>
-        <div>
-          <label htmlFor={'template-herstellungsort'}>Herstellungsort</label>
-          <input
-            id={"template-herstellungsort"}
-            name={"herstellungsort"}
-            type={"text"}
-            className={"full input-field"}
-            defaultValue={objectData.herstellungsort}
-            onChange={herstellungsortChangeHandler}
-          />
-        </div>
-        <div >
-          <label htmlFor={'template-herstellungsdatum'}>Herstellungsdatum</label>
-          <input
-            id={"template-herstellungsdatum"}
-            name={"herstellungsdatum"}
-            type={"text"}
-            className={"full input-field"}
-            defaultValue={objectData.herstellungsdatum}
-            onChange={herstellungsdatumChangeHandler}
-          />
+          <div>
+            <label htmlFor={'template-datum'}>Datum</label>
+            <input
+              id={"template-datum"}
+              name={"datum"}
+              type={"date"}
+              className={"full input-field"}
+              defaultValue={objectData.datum}
+              onChange={datumChangeHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor={'template-inventarnummer'}>Inventarnummer</label>
+            <input
+              id={"template-inventarnummer"}
+              name={"inventarnummer"}
+              type={"text"}
+              className={"full input-field"}
+              defaultValue={objectData.inventarnummer}
+              onChange={inventarnummerChangeHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor={'template-titel'}>Titel</label>
+            <input
+              id={"template-titel"}
+              name={"titel"}
+              type={"text"}
+              className={"full input-field"}
+              defaultValue={objectData.titel}
+              onChange={titelChangeHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor={'template-hersteller'}>Hersteller</label>
+            <input
+              id={"template-hersteller"}
+              name={"hersteller"}
+              type={"text"}
+              className={"full input-field"}
+              defaultValue={objectData.hersteller}
+              onChange={herstellerChangeHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor={'template-herstellungsort'}>Herstellungsort</label>
+            <input
+              id={"template-herstellungsort"}
+              name={"herstellungsort"}
+              type={"text"}
+              className={"full input-field"}
+              defaultValue={objectData.herstellungsort}
+              onChange={herstellungsortChangeHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor={'template-herstellungsdatum'}>Herstellungsdatum</label>
+            <input
+              id={"template-herstellungsdatum"}
+              name={"herstellungsdatum"}
+              type={"text"}
+              className={"full input-field"}
+              defaultValue={objectData.herstellungsdatum}
+              onChange={herstellungsdatumChangeHandler}
+            />
 
-        </div>
-        <div >
-          <label htmlFor={'template-materialTechnik'}>Material und Technik</label>
-          <input
-            id={"template-materialTechnik"}
-            name={"materialTechnik"}
-            type={"text"}
-            className={"full input-field"}
-            defaultValue={objectData.materialTechnik}
-            onChange={materialTechnikChangeHandler}
-          />
-        </div>
-        <div>
-          <label htmlFor={'template-masse'}>Maße</label>
-          <input
-            id={"template-masse"}
-            name={"masse"}
-            type={"text"}
-            className={"full input-field"}
-            defaultValue={objectData.masse}
-            onChange={masseChangeHandler}
-          />
-        </div>
+          </div>
+          <div>
+            <label htmlFor={'template-materialTechnik'}>Material und Technik</label>
+            <input
+              id={"template-materialTechnik"}
+              name={"materialTechnik"}
+              type={"text"}
+              className={"full input-field"}
+              defaultValue={objectData.materialTechnik}
+              onChange={materialTechnikChangeHandler}
+            />
+          </div>
+          <div>
+            <label htmlFor={'template-masse'}>Maße</label>
+            <input
+              id={"template-masse"}
+              name={"masse"}
+              type={"text"}
+              className={"full input-field"}
+              defaultValue={objectData.masse}
+              onChange={masseChangeHandler}
+            />
+          </div>
         </div>
         <button
           type={"submit"}
           className={'send-button center top-distance'}
           onClick={fillTemplateClickHandler}
-        >Dokument erstellen</button>
+        >Dokument erstellen
+        </button>
       </form>
     </div>
   )

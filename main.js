@@ -3,18 +3,41 @@
 // Import parts of electron to use
 const {app, BrowserWindow, dialog, ipcMain, Menu, screen, Tray} = require('electron')
 const openAboutWindow = require('about-window').default
+
+// Modules
+
+const FileLoader = require('./src/FileLoader');
 const path = require('path');
-const fs = require('fs');
+const Store = require('electron-store');
 const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow, tray;
 let devBrowserProperties = {};
+let devWebPreferences = {};
 
-const ASSET_PATH = app.isPackaged
-  ? path.resolve(process.resourcesPath, 'app/src/assets')
-  : path.resolve(__dirname, 'src/assets');
+const fileLoader = new FileLoader();
+
+const configDirPath = fileLoader.getConfigDirPath();
+const imageDirPath = fileLoader.getImageDirPath();
+const templateDirPath = fileLoader.getTemplateDirPath();
+
+// Create store.
+const store = new Store()
+store.set({
+  "configDirPath": configDirPath,
+  "imageDirPath":  imageDirPath,
+  "templateDirPath": templateDirPath,
+});
+
+
+// CONFIGJSON UNSET
+/*
+store.set(
+  "configJson", '',
+)
+*/
 
 let trayMenu = Menu.buildFromTemplate([
   {
@@ -32,10 +55,10 @@ let trayMenu = Menu.buildFromTemplate([
   }
 ])
 
- const RESSOURCE_PATH= fs.existsSync(ASSET_PATH) ? ASSET_PATH : 'resources/files' ;
+
 
 function createTray() {
-  tray = new Tray(path.resolve(RESSOURCE_PATH, 'images/marvin16x16.png'));
+  tray = new Tray(path.resolve(imageDirPath, 'marvin16x16.png'));
   tray.setToolTip('Marvin')
   tray.setContextMenu(trayMenu);
   tray.on('click', function() {
@@ -73,11 +96,6 @@ async function handleFileOpen() {
   }
 }
 
-// Constants
-
-const getAssetPath = async (assetPath) => {
-  return path.resolve(ASSET_PATH, assetPath);
-};
 
 // Build main menu from file.
 let mainMenu = Menu.buildFromTemplate(
@@ -140,7 +158,7 @@ let mainMenu = Menu.buildFromTemplate(
           label: 'Über Marvin',
           click: () => {
             openAboutWindow({
-              icon_path: path.join(__dirname, 'marvin.ico'),
+              icon_path: path.resolve(imageDirPath, 'marvin.ico'),
               bug_report_url: 'mailto:r.nasarek@gnm.de',
               bug_link_text: 'Einen Fehler melden',
               license: 'MIT',
@@ -159,14 +177,16 @@ function createWindow(dimensions) {
   if (dev !== true) {
     devBrowserProperties = {
       fullscreenable: false,
-      resizable: true,
+      resizable: false,
     }
-
+    devWebPreferences = {
+      devTools: false
+    }
   }
   // Create tray icon.
   createTray()
-  let appWidth = 400;
-  let appHeight = 720;
+  let appWidth = 520;
+  let appHeight = 860;
   let xPosition = (dimensions.width - appWidth)
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -175,12 +195,13 @@ function createWindow(dimensions) {
     y: 0,
     width: appWidth,
     height: appHeight,
-    icon: path.resolve(RESSOURCE_PATH, 'images/marvin.ico'),
+    icon: path.resolve(imageDirPath, 'marvin.ico'),
     show: false,
     webPreferences: {
+      ...devWebPreferences,
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
     }
   })
 
@@ -223,7 +244,6 @@ function createWindow(dimensions) {
         .catch(err => console.log('Error loading React DevTools: ', err))
       mainWindow.webContents.openDevTools()
     }
-    mainWindow.webContents.openDevTools()
   })
 
   mainWindow.on('close', function (e) {
@@ -247,10 +267,6 @@ function createWindow(dimensions) {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   ipcMain.handle('dialog:openFile', handleFileOpen)
-  ipcMain.handle('assetPath:getAssetPath', async (event, assetPath) => {
-    return await getAssetPath(assetPath)
-  })
-
   const display = screen.getPrimaryDisplay();
   const dimensions = display.size;
   createWindow(dimensions);

@@ -1,9 +1,5 @@
 // Modules
-import {FileLoader} from "../FileLoader";
-
-// Electron
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
+import Store from 'electron-store';
 
 // Icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -13,7 +9,6 @@ import React, {useState} from "react";
 import {NavLink} from "react-router-dom";
 import {Input} from "../components/Input";
 import EditIcon from "@mui/icons-material/Edit";
-import {writeFile} from "fs";
 
 
 ////////////////////
@@ -21,16 +16,11 @@ import {writeFile} from "fs";
 ////////////////////
 
 export default function Settings() {
-  const fileLoader = new FileLoader()
-  const initialConfig = fileLoader.getConfigFile()
-  console.log(initialConfig)
-  const getConfigPath = async (path) => {
-    return await ipcRenderer.invoke('assetPath:getAssetPath', path)
-  }
-
+  const store = new Store()
+  const initialConfigJson = store.get('configJson')
 // States
   const [configFile, setConfigFile] = useState(
-    initialConfig
+    initialConfigJson
   )
   const [restart, setRestart] = useState(
     false
@@ -46,25 +36,18 @@ export default function Settings() {
         rootDir: rootDirFromWindow
       }
     })
-    await saveInputClickHandler(rootDirFromWindow)
+    saveInputClickHandler(rootDirFromWindow)
   }
 
 // Handler
-  async function saveInputClickHandler(rootDirFromWindow) {
+  function saveInputClickHandler(rootDirFromWindow) {
     let config2Safe = {
       rootDir: rootDirFromWindow
     }
     if (rootDirFromWindow) {
-      let message;
-      const configPath = await getConfigPath('config/config.json')
-      await writeFile(configPath, JSON.stringify(config2Safe, null, 2), (err) => {
-        if (err) {
-          message = err;
-        } else {
-          message = 'saved file'
-        }
-        return message
-      })
+      store.set(
+        'configJson', config2Safe
+      )
       setRestart(true)
       return restart;
     }

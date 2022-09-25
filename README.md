@@ -1,7 +1,7 @@
 # Marvin
 
 <div style="text-align: center;">
-<img src="marvin.ico"/>
+<img src="src/assets/images/marvin.ico"/>
 <p>
 Document manager for Institute for Art Technology and Conservation at <a href="https://gnm.de" _targer="blank">Germanic National Museum Nuremberg </a>
 </p>

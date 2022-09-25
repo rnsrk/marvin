@@ -3,9 +3,10 @@ import createReport from 'docx-templates';
 import {mkdir} from 'node:fs/promises';
 import path from 'path';
 import replaceSpecialCharacters from "replace-special-characters";
+import Store from 'electron-store'
 
 import {parseString, Builder} from 'xml2js';
-import {FileLoader} from "./FileLoader";
+import fs from "fs";
 
 
 ////////////////////
@@ -24,12 +25,11 @@ class DocCreator {
     // Get DateTime.
     this.today = new Date();
 
-    // FileLoader
-    this.fileLoader = new FileLoader()
+    // Electron config storage
+    this.store = new Store();
 
-    // Get config file and parse to json.
-    this.configFile = this.fileLoader.getConfigFile()
-
+    // Get config json
+    this.configJson = this.store.get('configJson')
     // Choose the template for selected document type.
     switch (objectData.dokumenttyp) {
       case 'rp':
@@ -68,13 +68,11 @@ class DocCreator {
 
     const folderName = this.normObjectId + '__' + this.normTitle
 
-    this.objectPath = path.join(this.configFile.rootDir, folderName);
-
+    this.objectPath = path.join(this.configJson.rootDir, folderName);
     this.documentPath = path.join(this.objectPath, this.documentInfo.documentType, objectData.datum);
     this.filename = this.normObjectId + '__' + this.normTitle + '__' + this.objectData.datum + '__' + this.objectData.dokumenttyp;
     this.filenameWithExtension = this.filename + '.docx'
     this.temporaryWorkDirPath = path.join(this.objectPath, 'werkstatt');
-
 
   }
 
@@ -87,7 +85,7 @@ class DocCreator {
     if (this.objectData.httpStatus === 200) {
       try {
         // Read template.
-        const template = fs.readFileSync(path.resolve(this.fileLoader.getTemplateDir(), this.documentInfo.templateFile));
+        const template = fs.readFileSync(path.resolve(this.store.get('templateDirPath'), this.documentInfo.templateFile));
 
         // Create report.
         buffer = await createReport({

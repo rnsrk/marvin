@@ -1,35 +1,54 @@
-import fs from "fs";
-import path from "path";
-
+const path = require('path');
+const fs = require('fs');
+const {app} = require('electron');
 
 class FileLoader {
   assetPath;
-  devAssetPath = 'src/assets';
-  buildAssetPath = 'resources/app/src/assets';
-  packedAssetPath = 'resources/files/';
+  assetBuildPath;
+  assetInstallerPath;
+  assetDevPath;
 
-  getPackedStructure() {
-    if (fs.existsSync(this.packedAssetPath)) {
-      this.assetPath = this.packedAssetPath;
-    } else if (fs.existsSync(this.buildAssetPath)) {
-      this.assetPath = this.packedAssetPath;
+  constructor(props) {
+    this.getAssetPath()
+  }
+
+  getAssetPath() {
+    this.assetBuildPath = path.resolve(__dirname, '../assets');
+    this.assetInstallerPath = path.resolve(__dirname, 'assets');
+    this.assetDevPath = path.resolve(app.getAppPath(), 'assets');
+
+    if (fs.existsSync(this.assetInstallerPath)) {
+      this.assetPath = this.assetInstallerPath
+    } else if (fs.existsSync(this.assetBuildPath)) {
+      this.assetPath = this.assetBuildPath
     } else {
-      this.assetPath = this.devAssetPath;
+      this.assetPath = this.assetDevPath
     }
   }
 
   getConfigFile() {
-    this.getPackedStructure()
-    console.log(this.assetPath)
-    const ConfigFile = fs.readFileSync(path.resolve(this.assetPath, 'config/config.json'))
-    return JSON.parse(ConfigFile.toString())
+    const fileBuffer = fs.readFileSync(path.resolve(this.assetPath, 'config/config.json'))
+    return JSON.parse(fileBuffer.toString())
   }
 
-  getTemplateDir() {
+  getTemplateDirPath() {
     return path.resolve(this.assetPath, 'templates');
-
   }
+  getConfigDirPath() {
+    return path.resolve(this.assetPath, 'config');
+  }
+  getImageDirPath() {
+    return path.resolve(this.assetPath, 'images');
+  }
+
+  whereAmI () {
+    console.log(__dirname , '__dirname');
+    console.log(process.resourcesPath, 'resourcePath');
+    console.log(process.cwd(), 'cwd');
+    console.log(process.env.PWD, 'pwd');
+    console.log(app.getAppPath(), 'getAppPath')
+  }
+
 }
 
-export {FileLoader}
-
+module.exports = FileLoader;
